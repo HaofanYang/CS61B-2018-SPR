@@ -1,3 +1,5 @@
+import javax.swing.plaf.synth.SynthTextAreaUI;
+
 /**
  * Exercise to showcase the step over button.
  * Code adapted from https://stackoverflow.com/questions/4895173/bitwise-multiply-and-add-in-java and https://stackoverflow.com/questions/1533131/what-useful-bitwise-operator-code-tricks-should-a-developer-know-about
@@ -42,26 +44,23 @@ public class DebugExercise2 {
      * and b = {0, 20, 5}, this function will return {1, 20, 5}.
      * */
     public static int[] arrayMax(int[] a, int[] b) {
-        if (a.length != b.length) {
-            System.out.println("ERROR! Arrays don't match");
+        if(a.length != b.length){
+            System.out.println("ERROR");
             return null;
         }
-        int[] returnArray = new int[a.length];
-        for (int i = 0; i < a.length; i += 1) {
-            int biggerValue = max(a[i], b[i]);
-            returnArray[i] = biggerValue;
-        }
+        int[] maxArray = new int[a.length];
+        for(int i = 0; i < a.length; i++){
+             maxArray[i] = Math.max(a[i],b[i]);
 
-        return returnArray;
+        }
+        return maxArray;
     }
 
     /** Returns the sum of all elements in x. */
     public static int arraySum(int[] x) {
-        int i = 0;
         int sum = 0;
-        while (i < x.length) {
-            sum = sum + add(sum, x[i]);
-            i = i + 1;
+        for (int i : x){
+            sum += i;
         }
         return sum;
     }
