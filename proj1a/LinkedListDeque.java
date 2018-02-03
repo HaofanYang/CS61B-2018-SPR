@@ -120,6 +120,9 @@ public class LinkedListDeque<Item> {
         ItemNode ref = sentinel.next;
         return getRecursvieHelper(ref, i);
     }
+
+
+    // a stupid way to test
 /**
     public static void main(String[] args){
         LinkedListDeque<Integer> list = new LinkedListDeque<>();
