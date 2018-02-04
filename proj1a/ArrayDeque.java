@@ -20,8 +20,8 @@ public class ArrayDeque<Item> {
      *             length = 9
      *             3 --> 0 = length - ( i + s )
      * */
-    private int moveForward(int i, int s){
-        if(i + s >= items.length){
+    private int moveForward(int i, int s) {
+        if (i + s >= items.length) {
             return ((i + s) - items.length);
         }
         return i + s;
@@ -42,23 +42,26 @@ public class ArrayDeque<Item> {
      *            i - s = 3 - 4 = -1 < 0
      *            3 --> 8 = length - abs( i - s) = 9 - 1
      * */
-    private int moveBack(int i, int s){
-        if(i - s < 0){
+    private int moveBack(int i, int s) {
+        if (i - s < 0) {
             return items.length - (s - i);
         }
         return i - s;
     }
 
     /** If the array items[] is full, returns true. Otherwise, returns false. */
-    private boolean ifFull(){
-        return nextFirst == moveBack(nextLast, 1);
+    private boolean ifFull() {
+        return items.length == size;
     }
 
     /**
      * If the efficiency is less than 0.25, then returns true. Otherwise returns false.
      * */
-    private boolean ifTooEmpty(){
-        float efficiency = size / items.length;
+    private boolean ifTooEmpty() {
+        if (items.length <= 8) {
+            return false;
+        }
+        float efficiency = (float) size / (float) items.length;
         return efficiency < 0.25;
     }
 
@@ -79,7 +82,7 @@ public class ArrayDeque<Item> {
      *
      *                                     NEW POSITIONS
      *
-     *Index 0 1 2 3 4 ...........LAST 32 ....NEW SPACE (n).....31+n 32+n(First) .....................n
+     *Index 0 1 2 3 4 ...........LAST 32 ....NEW SPACE (n).....31+n 32+n(First) ...........n
      *                                 |                        |
      *                                 |                        |
      *                                 |                        |
@@ -110,9 +113,9 @@ public class ArrayDeque<Item> {
         if (ifFull() || ifTooEmpty()) {
             int capacity = items.length;
             if (ifFull()) {
-                capacity /= 2;
+                capacity *= 2;
             } else if (ifTooEmpty()) {
-                capacity += 2;
+                capacity /= 2;
             }
             Item[] newArray = (Item[]) new Object[capacity];
             int lastIndex = moveBack(nextLast, 1);
@@ -123,33 +126,37 @@ public class ArrayDeque<Item> {
             System.arraycopy(items, firstIndex, newArray, newFirstIndex, numOfReminder);
             items = newArray;
             nextFirst = moveBack(newFirstIndex, 1);
-            nextLast = moveForward(nextLast, 1);
+            nextLast = moveForward(lastIndex, 1);
+            return;
         }
+        return;
     }
 
     /** Constructor */
-    public ArrayDeque(){
+    public ArrayDeque() {
         items = (Item[]) new Object[8];
         size = 0;
     }
 
 
     /** Add one item to the front of the list and Update nextLast*/
-    public void addFirst(Item i){
+    public void addFirst(Item i) {
+        resize();
         items[nextFirst] = i;
         size += 1;
         nextFirst = moveBack(nextFirst, 1);
     }
 
     /** Remove the last item of the queue and Update nextLast*/
-    public void addLast(Item i){
+    public void addLast(Item i) {
+        resize();
         items[nextLast] = i;
         size += 1;
         nextLast = moveForward(nextLast, 1);
     }
 
     /** Returns a boolean to tell if a queue is empty */
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return size == 0;
     }
 
@@ -163,9 +170,9 @@ public class ArrayDeque<Item> {
      *  the first element is items[moveForward(nextFirst)]
      * */
 
-    public void printDeque(){
+    public void printDeque() {
         int index = moveForward(nextFirst, 1);
-        for (int count = 1; count <= size; count++){
+        for (int count = 1; count <= size; count++) {
             System.out.print(items[index] + " ");
             index = moveForward(index, 1);
         }
@@ -175,7 +182,7 @@ public class ArrayDeque<Item> {
      * Invariants:
      * The index of the last element is moveBack[nextLast]
      * */
-    public Item removeFirst(){
+    public Item removeFirst() {
         nextFirst = moveForward(nextFirst, 1);
         Item output = items[nextFirst];
         items[nextFirst] = null;
@@ -184,7 +191,7 @@ public class ArrayDeque<Item> {
     }
 
     /** Deletes the last item and returns it */
-    public Item removeLast(){
+    public Item removeLast() {
         nextLast = moveBack(nextLast, 1);
         Item output = items[nextLast];
         items[nextLast] = null;
@@ -197,7 +204,7 @@ public class ArrayDeque<Item> {
      * i.e. list[0]
      * I should let nextFirst moves forward 1 step, which is index + 1 steps.
      * */
-    public Item get(int index){
+    public Item get(int index) {
         int track = nextFirst; //It does not modify nextFirst
         track = moveForward(track, index + 1);
         return items[track];
