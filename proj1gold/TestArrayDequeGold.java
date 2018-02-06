@@ -39,19 +39,19 @@ public class TestArrayDequeGold {
     @Test
     public void testSth(){
         StudentArrayDeque<Integer> student = new StudentArrayDeque<>();
-        int capacity = 1000;
+        int capacity = 100;
         ArrayDequeSolution<Integer> solution = new ArrayDequeSolution<>();
-        String[] callsCollections = new String[capacity * 2];
+        String callsCollections = "sh \n";
         for (int i = 0; i < capacity; i++){
             int randomNumber = StdRandom.uniform(2);
             if (randomNumber == 0){
                 student.addFirst(i);
                 solution.addFirst(i);
-                callsCollections[i] = "addFirst(" + i + ")";
+                callsCollections += " addFirst(" + i + ")" + '\n';
             } else if (randomNumber == 1){
                 student.addLast(i);
                 solution.addLast(i);
-                callsCollections[i] = "addLast(" + i + ")";
+                callsCollections += " addLast(" + i + ")" + '\n';
             }
         }
         for (int i =0; i < capacity; i++){
@@ -59,14 +59,14 @@ public class TestArrayDequeGold {
             if (randomNumber == 0){
                 Integer stu = student.removeFirst();
                 Integer exp = solution.removeFirst();
-                callsCollections[capacity + i] = "removeFirst()";
-                assertEquals(Arrays.toString(callsCollections), exp, stu);
+                callsCollections += " removeFirst()" + '\n';
+                assertEquals(callsCollections, exp, stu);
             }
             if (randomNumber == 1){
                 Integer stu = student.removeFirst();
                 Integer exp = solution.removeFirst();
-                callsCollections[capacity + i] = "removeFirst()";
-                assertEquals(Arrays.toString(callsCollections), exp, stu);
+                callsCollections += " removeFirst()" + '\n';
+                assertEquals(callsCollections, exp, stu);
             }
         }
 
