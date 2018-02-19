@@ -4,8 +4,8 @@ import org.junit.Test;
 public class TestArrayDequeGold {
     @Test
     public void testSth(){
-        ArrayDeque<Integer> student = new ArrayDeque<>();
-        int capacity = 10000;
+        LinkedListDeque<Integer> student = new LinkedListDeque<>();
+        int capacity = 100;
         ArrayDequeSolution<Integer> solution = new ArrayDequeSolution<>();
         String callsCollections = "sh \n";
         for (int i = 0; i < capacity; i++){
@@ -29,9 +29,9 @@ public class TestArrayDequeGold {
                 assertEquals(callsCollections, exp, stu);
             }
             if (randomNumber == 1){
-                Integer stu = student.removeFirst();
-                Integer exp = solution.removeFirst();
-                callsCollections += " removeFirst()" + '\n';
+                Integer stu = student.removeLast();
+                Integer exp = solution.removeLast();
+                callsCollections += " removeLast()" + '\n';
                 assertEquals(callsCollections, exp, stu);
             }
         }
