@@ -13,14 +13,14 @@ public class HexWorldTest {
 
     @Test
     public void getNumOfOnesTest(){
-        int expect1 = 4;
-        int actual1 = HexWorld.getNumOfOnes(1, 2);
+        int expect1 = 6;
+        int actual1 = HexWorld.getNumOfOnes(2, 4);
         assertEquals(expect1, actual1);
         int expect2 = 4;
-        int actual2 = HexWorld.getNumOfOnes(7, 4);
+        int actual2 = HexWorld.getNumOfOnes(8, 4);
         assertEquals(expect2, actual2);
-        int expect3 = 7;
-        int actual3 = HexWorld.getNumOfOnes(3, 3);
+        int expect3 = 8;
+        int actual3 = HexWorld.getNumOfOnes(6, 4);
         assertEquals(expect3, actual3);
 
     }
