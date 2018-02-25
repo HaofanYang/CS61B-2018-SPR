@@ -45,7 +45,7 @@ public class Room {
     }
 
     // determine if a coordinate (x, y) can be an exit
-    private boolean wallCanAppear(int x, int y){
+    protected boolean wallCanAppear(int x, int y){
         final int WIDTH = representation.length;
         final int HEIGHT = representation[0].length;
         if (x == 0 || x == WIDTH - 1 || y == 0 || y == HEIGHT - 1){
@@ -60,7 +60,7 @@ public class Room {
     }
 
 
-    public boolean atCorner(int[] coor){
+    protected boolean atCorner(int[] coor){
         int[] c1 = (new int[] {0, 0});
         int[] c2 = (new int[] {0, getHeight() - 1});
         int[] c3 = (new int[] {getWidth() - 1, 0});

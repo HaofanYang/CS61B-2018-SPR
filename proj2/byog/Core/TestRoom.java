@@ -7,6 +7,7 @@ import byog.TileEngine.Tileset;
 
 public class TestRoom {
 
+    /**
     @Test
     public void TestIsAtcorner(){
         Room room1 = new Room(10, 25, 12, 23);
@@ -18,7 +19,7 @@ public class TestRoom {
         assertTrue(room1.atCorner(corner2));
         assertTrue(room1.atCorner(corner3));
         assertTrue(room1.atCorner(corner4));
-    }
+    }*/
 
 
     public static void main(String[] args) {
