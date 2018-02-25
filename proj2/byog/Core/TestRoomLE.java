@@ -35,11 +35,7 @@ public class TestRoomLE {
     public void testRoomLE() {
         for (int i = 0; i < 1000; i++) {
             Room roomle1 = new RoomLE(10, 10, 30, 42);
-            Exit[] exits = roomle1.wallCoordinates;
-            for (Exit e : exits) {
-                if (e == null){
-                    continue;
-                }
+            for (Exit e : roomle1.getExits()) {
                 int[] coor1 = e.position();
                 assertTrue("The coordinate (" + coor1[0] + ", " + coor1[1] + ") appears!",onTheLeft(coor1));
             }
@@ -51,11 +47,7 @@ public class TestRoomLE {
     public void testRoomRE() {
         for (int i = 0; i < 1000; i++) {
             RoomRE roomre1 = new RoomRE(10, 10, 30, 42);
-            Exit[] exits = roomre1.wallCoordinates;
-            for (Exit e : exits) {
-                if (e == null){
-                    continue;
-                }
+            for (Exit e : roomre1.getExits()) {
                 int[] coor1 = e.position();
                 assertTrue("The coordinate (" + coor1[0] + ", " + coor1[1] + ") appears!",onTheRight(coor1, roomre1));
             }
@@ -67,11 +59,7 @@ public class TestRoomLE {
     public void testRoomTE() {
         for (int i = 0; i < 1000; i++) {
             RoomTE roomte1 = new RoomTE(10, 10, 30, 42);
-            Exit[] exits = roomte1.wallCoordinates;
-            for (Exit e : exits) {
-                if (e == null){
-                    continue;
-                }
+            for (Exit e : roomte1.getExits()) {
                 int[] coor1 = e.position();
                 assertTrue("The coordinate (" + coor1[0] + ", " + coor1[1] + ") appears!",onTheTop(coor1, roomte1));
             }
@@ -83,11 +71,7 @@ public class TestRoomLE {
     public void testRoomBE() {
         for (int i = 0; i < 1000; i++) {
             RoomBE roombe1 = new RoomBE(10, 10, 30, 42);
-            Exit[] exits = roombe1.wallCoordinates;
-            for (Exit e : exits) {
-                if (e == null){
-                    continue;
-                }
+            for (Exit e : roombe1.getExits()) {
                 int[] coor1 = e.position();
                 assertTrue("The coordinate (" + coor1[0] + ", " + coor1[1] + ") appears!",onTheBottom(coor1));
             }

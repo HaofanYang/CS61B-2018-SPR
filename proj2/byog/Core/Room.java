@@ -2,12 +2,14 @@ package byog.Core;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
 
 public class Room {
     private int[] leftBottomPos;
     private int[] rightTopPos;
-    public Exit[] wallCoordinates; // coordinates of "wall" elements (defined within "representation")
+    private HashSet<Exit> exits = new HashSet<Exit>(); // coordinates of "wall" elements (defined within "representation")
     public int[][] representation; // the 2D array that represent the room, where 1 represents wall and 0 represents floor.
 
 
@@ -25,17 +27,14 @@ public class Room {
     private void createStandardRoom() {
         final int WIDTH = representation.length;
         final int HEIGHT = representation[0].length;
-        wallCoordinates = new Exit[2 * (WIDTH + HEIGHT) - 4];
         // Create a standard room, without exits
-        int index = 0;
         for (int i = 0; i < WIDTH; i++) {
             for (int k = 0; k < HEIGHT; k++) {
                 if (i == 0 || i == WIDTH - 1 || k == 0 || k == HEIGHT - 1) {
                     representation[i][k] = 1;
                     // Save the current coordinate into wallSpace
                     if (wallCanAppear(i, k)) {
-                        wallCoordinates[index] = new Exit(i, k);
-                        index += 1;
+                        exits.add(new Exit(i, k));
                     }
                 } else {
                     representation[i][k] = 0;
@@ -69,30 +68,41 @@ public class Room {
 
     }
 
-    // From each Exit in the wallSpace, they have 20% probability to appear.
+    // From each Exit in the wallSpace. They have 20% probability to appear.
     private void randomSelectExits() {
+        Iterator it = exits.iterator();
         Random rd = new Random();
-        for (int i = 0; i < wallCoordinates.length; i++){
+        while (it.hasNext()){
+            it.next(); // We need to move the pointer of iterator forward in order to remove
             int a = rd.nextInt(5);
             if (a < 4){
-                wallCoordinates[i] = null;
+                it.remove();
             }
         }
     }
+
+
+
 
     private void addExits() {
-        for (Exit e : wallCoordinates) {
-            if (e == null){
-                continue;
-            } else {
-                int x = e.position()[0];
-                int y = e.position()[1];
-                representation[x][y] = 0;
-            }
+        for (Exit e : exits) {
+            int x = e.position()[0];
+            int y = e.position()[1];
+            representation[x][y] = 0;
         }
     }
 
+
     // ----------------------------------Public methods are below this line -----------------------------
+
+
+    // Constructor
+    public Room(int width, int height, int x, int y) {
+        representation = new int[width][height];
+        leftBottomPos = new int[]{x, y};
+        rightTopPos = new int[]{x + width - 1, y + height - 1};
+        iniRepresentation();
+    }
 
     // generate a rectangular room in a given world
     public void addRoom(TETile[][] world) {
@@ -115,13 +125,6 @@ public class Room {
 
     }
 
-    // Constructor
-    public Room(int width, int height, int x, int y) {
-        representation = new int[width][height];
-        leftBottomPos = new int[]{x, y};
-        rightTopPos = new int[]{x + width - 1, y + height - 1};
-        iniRepresentation();
-    }
 
     public int getWidth(){
         return representation.length;
@@ -131,4 +134,7 @@ public class Room {
         return  representation[0].length;
     }
 
+    public HashSet<Exit> getExits() {
+        return exits;
+    }
 }
