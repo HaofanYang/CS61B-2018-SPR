@@ -1,9 +1,12 @@
 package byog.Core;
 
 /** Rooms with exits on the right */
-public class RoomRE extends Room {
+public class RoomRE extends Sector {
     public RoomRE(int width, int height, int xPos, int yPos){
-        super(width, height, xPos, yPos);
+        super(xPos, yPos);
+        representation = new int[width][height];
+        rightTopPos = new int[]{xPos + width - 1, yPos + height - 1};
+        iniRepresentation();
     }
 
     @Override

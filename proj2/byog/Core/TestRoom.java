@@ -31,8 +31,8 @@ public class TestRoom {
                 world[i][k] = Tileset.NOTHING;
             }
         }
-        Room room1 = new Room(10, 25, 12, 23);
-        room1.addRoom(world);
+        Sector room1 = new RoomTE(10, 25, 12, 23);
+        room1.addToWorld(world);
         tile.renderFrame(world);
     }
 

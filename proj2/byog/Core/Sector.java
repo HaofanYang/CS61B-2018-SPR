@@ -1,15 +1,17 @@
 package byog.Core;
+
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 
-public class Room {
-    private int[] leftBottomPos;
-    private int[] rightTopPos;
-    private HashSet<Exit> exits = new HashSet<Exit>(); // coordinates of "wall" elements (defined within "representation")
+public class Sector {
+    protected int[] leftBottomPos;
+    protected int[] rightTopPos;
+    protected HashSet<Exit> exits = new HashSet<Exit>(); // coordinates of "wall" elements (defined within "representation")
     public int[][] representation; // the 2D array that represent the room, where 1 represents wall and 0 represents floor.
 
 
@@ -17,14 +19,14 @@ public class Room {
     /**
      * Parameterization of representation, 1 represents wall and 0 represent floor, including exits
      */
-    private void iniRepresentation() {
-        createStandardRoom();
+    protected void iniRepresentation() {
+        createStandardSector();
         randomSelectExits();
         addExits();
     }
 
     // Create a standard room without exits and record wallSpace
-    private void createStandardRoom() {
+    private void createStandardSector() {
         final int WIDTH = representation.length;
         final int HEIGHT = representation[0].length;
         // Create a standard room, without exits
@@ -82,8 +84,6 @@ public class Room {
     }
 
 
-
-
     private void addExits() {
         for (Exit e : exits) {
             int x = e.position()[0];
@@ -97,15 +97,12 @@ public class Room {
 
 
     // Constructor
-    public Room(int width, int height, int x, int y) {
-        representation = new int[width][height];
+    public Sector(int x, int y) {
         leftBottomPos = new int[]{x, y};
-        rightTopPos = new int[]{x + width - 1, y + height - 1};
-        iniRepresentation();
     }
 
     // generate a rectangular room in a given world
-    public void addRoom(TETile[][] world) {
+    public void addToWorld(TETile[][] world) {
         int xCurrent = leftBottomPos[0];
         int xEnd = rightTopPos[0];
         int yEnd = rightTopPos[1];
