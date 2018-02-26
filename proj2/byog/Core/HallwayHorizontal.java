@@ -5,5 +5,6 @@ public class HallwayHorizontal extends Sector {
         super(xPos, yPos);
         rightTopPos = new int[]{xPos + length - 1, yPos + 2};
         representation = new int[length][3];
+        iniRepresentation();
     }
 }

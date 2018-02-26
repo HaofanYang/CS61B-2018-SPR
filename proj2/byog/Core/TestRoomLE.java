@@ -88,7 +88,7 @@ public class TestRoomLE {
                 world[i][k] = Tileset.NOTHING;
             }
         }
-        Sector Sectorle1 = new RoomTE(10, 10, 30, 42);
+        Sector Sectorle1 = new HallwayVertical(10,  30, 42);
         Sectorle1.addToWorld(world);
         tile.renderFrame(world);
     }

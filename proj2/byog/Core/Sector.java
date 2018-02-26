@@ -2,13 +2,12 @@ package byog.Core;
 
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 
-public class Sector {
+public class Sector implements Element{
     protected int[] leftBottomPos;
     protected int[] rightTopPos;
     protected HashSet<Exit> exits = new HashSet<Exit>(); // coordinates of "wall" elements (defined within "representation")
@@ -133,5 +132,13 @@ public class Sector {
 
     public HashSet<Exit> getExits() {
         return exits;
+    }
+
+    public int[] getLeftBottomPos(){
+        return leftBottomPos;
+    }
+
+    public int[] getRightTopPos(){
+        return rightTopPos;
     }
 }
