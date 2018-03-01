@@ -70,12 +70,11 @@ public class SingleColumn {
         // Might be buggy
         private void iniThisColumn(SingleColumn prevCol) {
             int totalNumOfZones = prevCol.edges.size() / 2;
-            int numOfNewZones = RandomUtils.uniform(RANDOM, 1, totalNumOfZones + 1);
-            ArrayList<Integer> newEdges = selectEdges(prevCol.edges, numOfNewZones);
+
             int index = 0;
-            for (int i = 0; i < numOfNewZones; i++) {
-                int a = newEdges.get(2 * i);
-                int b = newEdges.get(2 * i + 1);
+            for (int i = 0; i < totalNumOfZones; i++) {
+                int a = prevCol.edges.get(2 * i);
+                int b = prevCol.edges.get(2 * i + 1);
                 randomExpend(index, a);
                 randomContract(a, b);
                 index = b;
@@ -89,9 +88,13 @@ public class SingleColumn {
 
         /** Expend the area outside the Floor range [b, t)
          *  Invariance:
-         *             The number of blanks in this range must be t - b + 1
+         *             The number of blanks in this range must be: t - b
          *             Floor must be continuous and more than 3
-         *             If number of blanks is less than 3, DONT add any floor
+         *             If number of blanks is less than 3:
+         *                                                if t == HEIGHT:
+         *                                                                Add nothing
+         *                                                if t != HEIGHT:
+         *                                                                Add floor or nothing
          *             If number of blanks is 3, either adding 3 floor or 3 Nothing
          *             If number of blanks is more than 3:
          *                                               use a random number to determine the first item type:
@@ -101,36 +104,93 @@ public class SingleColumn {
          */
         private void randomExpend(int b, int t) {
             int numOfBlanks = t - b;
-            while(numOfBlanks > 0) {
-                if (floorCanAppear(numOfBlanks)) {
-                    // if true add 1, otherwise add 0;
-                    boolean jug = RandomUtils.bernoulli(RANDOM, 0.1);
-                    if (jug) {
-                        for (int i = 0; i < 3; i++) {
-                            representation.add(1);
-                            numOfBlanks -= 1;
-                        }
-                    } else {
-                        representation.add(0);
-                        numOfBlanks -= 1;
+            if (numOfBlanks < 3) {
+                // If determ == false, add 1
+                boolean determ = true;
+                if (t != HEIGHT) {
+                    determ = RandomUtils.bernoulli(RANDOM, 0.5);
+                }
+                if(determ) {
+                    for(int i = b; i < t; i++) {
+                        representation.add(i, 0);
                     }
                 } else {
-                    for (int k = 0; k < numOfBlanks; k++) {
-                        representation.add(0);
-                        numOfBlanks -= 1;
+                    for(int i = b; i < t; i++) {
+                        representation.add(i, 1);
+                    }
+                }
+            } else if (numOfBlanks == 3) {
+                // If true, add 1
+                boolean determ = RandomUtils.bernoulli(RANDOM, 0.7);
+                    for(int i = b; i < t; i++) {
+                        if (determ){
+                            representation.add(i, 1);
+                        } else {
+                            representation.add(i, 0);
+                        }
+                    }
+            } else if (numOfBlanks > 3){
+                int index = b;
+                while (index < t) {
+                    boolean determ = RandomUtils.bernoulli(RANDOM, 0.7);
+                    if (determ) {
+                        int numToAdd = RandomUtils.uniform(RANDOM, 3, numOfBlanks + 1);
+                        int maxOfForward = (numOfBlanks - numToAdd);
+                        int startPos = RandomUtils.uniform(RANDOM, b, b + maxOfForward + 1);
+                        int endPos = startPos + numToAdd;
+                        for (; index < startPos; index++) {
+                            representation.add(index, 0);
+                        }
+                        for (; index < endPos; index++) {
+                            representation.add(index, 1);
+                        }
+                        for (; index < t; index++) {
+                            representation.add(index, 0);
+                        }
+
+                    } else {
+                        for (; index < t; index++) {
+                            representation.add(index, 0);
+                        }
                     }
                 }
             }
         }
 
         /**
-         * Add Floor or Nothing in a given range [b, t), based on passed-in boolean
+         * if number of blanks is more than 3, add a RANDOM NUMBER floor at a RANDOM POSITION
+         * is number of blanks is 3, just add 3 floor
          */
-        private void randomContract(int b, int t){
+        public void randomContract(int b, int t){
                 int numOfBlanks = t - b;
-                int index = b;
-                for(int i = 0; i < numOfBlanks; i++, index++) {
-                    representation.add(index, 1);
+                if (numOfBlanks == 3) {
+                    for (int i = b; i < numOfBlanks + b; i++) {
+                        representation.add(i, 1);
+                    }
+                } else if (numOfBlanks > 3){
+                    boolean isDecreased = RandomUtils.bernoulli(RANDOM, 0.3);
+                    if (isDecreased) {
+                        int numToAdd = RandomUtils.uniform(RANDOM, 3, numOfBlanks);
+                        int maxOfForward = (numOfBlanks - numToAdd);
+                        int startPos = RandomUtils.uniform(RANDOM, b, b + maxOfForward + 1);
+                        int currPos = b;
+                        int endPos = startPos + numToAdd;
+                        while(currPos < t) {
+                            for (; currPos < startPos; currPos++) {
+                                representation.add(currPos, 0);
+                            }
+                            for (; currPos < endPos; currPos++) {
+                                representation.add(currPos, 1);
+                            }
+                            for (; currPos < t; currPos++) {
+                                representation.add(currPos,0);
+                            }
+                        }
+                    } else {
+                        for (int i = b; i < t; i++) {
+                            representation.add(i, 0);
+                        }
+                    }
                 }
             }
 
@@ -180,44 +240,6 @@ public class SingleColumn {
             }
         }
 
-        /** Helper method for randomExpend() */
-        private static boolean floorCanAppear(int num) {
-            return num >= 3;
-        }
-
-        //TODO change this to private when finish
-        public static ArrayList<Integer> selectEdges(ArrayList<Integer> edges, int n) {
-            if (n > edges.size() / 2) {
-                throw new ArrayIndexOutOfBoundsException("Opps, doesn't have enough Floor zones");
-            }
-                ArrayList<Integer> output = new ArrayList();
-                HashSet<Integer> selected = selectOutOf(n, edges.size() / 2);
-                for(int i : selected) {
-                    int toAppend1 = edges.get(2 * i);
-                    int toAppend2 = edges.get(2 * i + 1);
-                    output.add(toAppend1);
-                    output.add(toAppend2);
-                }
-            Collections.sort(output);
-            return output;
-        }
-
-        // TODO change this to private when finish
-        public static HashSet<Integer> selectOutOf(int i, int c){
-            HashSet<Integer> output = new HashSet<>();
-            Random rd = new Random();
-            while (output.size() < i) {
-                int toAppend = rd.nextInt(c);
-                    output.add(toAppend);
-                }
-            return output;
-        }
-
-        private void addWall() {
-            for (int i : edges) {
-                representation.add(i, 2);
-            }
-        }
 
     }
 
