@@ -162,11 +162,11 @@ public class SingleColumn {
          * is number of blanks is 3, just add 3 floor
          */
         public void randomContract(int b, int t){
-                int numOfBlanks = t - b;
-                if (numOfBlanks == 3) {
-                    for (int i = b; i < numOfBlanks + b; i++) {
-                        representation.add(i, 1);
-                    }
+            int numOfBlanks = t - b;
+            if (numOfBlanks == 3) {
+                for (int i = b; i < numOfBlanks + b; i++) {
+                    representation.add(i, 1);
+                }
                 } else if (numOfBlanks > 3){
                     boolean isDecreased = RandomUtils.bernoulli(RANDOM, 0.3);
                     if (isDecreased) {
@@ -180,17 +180,35 @@ public class SingleColumn {
                                 representation.add(currPos, 0);
                             }
                             for (; currPos < endPos; currPos++) {
+                                if (currPos != representation.size()){
+                                    throw new ArrayIndexOutOfBoundsException("Error 2");
+                                }
                                 representation.add(currPos, 1);
                             }
                             for (; currPos < t; currPos++) {
+                                if (currPos != representation.size()){
+                                    throw new ArrayIndexOutOfBoundsException("Error 3");
+                                }
                                 representation.add(currPos,0);
                             }
                         }
                     } else {
                         for (int i = b; i < t; i++) {
-                            representation.add(i, 0);
+                            if (i != representation.size()){
+                                throw new ArrayIndexOutOfBoundsException("Error 4");
+                            }
+                            representation.add(i, 1);
                         }
                     }
+                } else if (numOfBlanks < 3){
+                    for (int i = b; i < numOfBlanks + b; i++){
+                        representation.add(i, 1);
+                    }
+                }
+                if (t != representation.size()){
+                    System.out.println(numOfBlanks);
+                    System.out.println(representation.size());
+                    throw new ArrayIndexOutOfBoundsException("Error 5");
                 }
             }
 
