@@ -1,8 +1,6 @@
 package byog.Core.RandomWorld;
 
-import java.lang.reflect.Array;
 import java.util.*;
-
 import byog.Core.RandomUtils; //Directly use its methods, as they are all static
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
@@ -47,7 +45,7 @@ public class SingleColumn {
                 if (representation.get(i) == 0) {
                     subWorld[i] = Tileset.NOTHING;
                 } else if (representation.get(i) == 1) {
-                    subWorld[i] = Tileset.SAND;
+                    subWorld[i] = Tileset.FLOOR;
                 } else {
                     subWorld[i] = Tileset.WALL;
                 }
@@ -58,7 +56,7 @@ public class SingleColumn {
 //---------------------------------------------- private methods below this line ---------------------------------------------
 
         private void iniFirstColumn() {
-            randomExpend(0, HEIGHT);
+            randomExpend(0, HEIGHT,1);
             iniEdges();
             //addWall();
         }
@@ -75,12 +73,12 @@ public class SingleColumn {
             for (int i = 0; i < totalNumOfZones; i++) {
                 int a = prevCol.edges.get(2 * i);
                 int b = prevCol.edges.get(2 * i + 1);
-                randomExpend(index, a);
+                randomExpend(index, a,1);
                 randomContract(a, b);
                 index = b;
             }
             if (index < HEIGHT) {
-                randomExpend(index, HEIGHT);
+                randomExpend(index, HEIGHT, 1);
             }
             iniEdges();
             //addWall();
@@ -102,7 +100,7 @@ public class SingleColumn {
          *                                                                                                    Add nothing
          *                                               update NumOfBlank
          */
-        private void randomExpend(int b, int t) {
+        private void randomExpend(int b, int t, int rep) {
             int numOfBlanks = t - b;
             if (numOfBlanks < 3) {
                 // If determ == false, add 1
@@ -116,7 +114,7 @@ public class SingleColumn {
                     }
                 } else {
                     for(int i = b; i < t; i++) {
-                        representation.add(i, 1);
+                        representation.add(i, rep);
                     }
                 }
             } else if (numOfBlanks == 3) {
@@ -124,7 +122,7 @@ public class SingleColumn {
                 boolean determ = RandomUtils.bernoulli(RANDOM, 0.7);
                     for(int i = b; i < t; i++) {
                         if (determ){
-                            representation.add(i, 1);
+                            representation.add(i, rep);
                         } else {
                             representation.add(i, 0);
                         }
@@ -132,7 +130,7 @@ public class SingleColumn {
             } else if (numOfBlanks > 3){
                 int index = b;
                 while (index < t) {
-                    boolean determ = RandomUtils.bernoulli(RANDOM, 0.7);
+                    boolean determ = RandomUtils.bernoulli(RANDOM, 0.5);
                     if (determ) {
                         int numToAdd = RandomUtils.uniform(RANDOM, 3, numOfBlanks + 1);
                         int maxOfForward = (numOfBlanks - numToAdd);
@@ -142,7 +140,7 @@ public class SingleColumn {
                             representation.add(index, 0);
                         }
                         for (; index < endPos; index++) {
-                            representation.add(index, 1);
+                            representation.add(index, rep);
                         }
                         for (; index < t; index++) {
                             representation.add(index, 0);
@@ -171,18 +169,9 @@ public class SingleColumn {
                     boolean isDecreased = RandomUtils.bernoulli(RANDOM, 0.3);
                     if (isDecreased) {
                         int numToAdd = RandomUtils.uniform(RANDOM, 3, numOfBlanks);
-                        int maxOfForward = (numOfBlanks - numToAdd);
-                        int startPos = RandomUtils.uniform(RANDOM, b, b + maxOfForward + 1);
                         int currPos = b;
-                        int endPos = startPos + numToAdd;
                         while(currPos < t) {
-                            for (; currPos < startPos; currPos++) {
-                                representation.add(currPos, 0);
-                            }
-                            for (; currPos < endPos; currPos++) {
-                                if (currPos != representation.size()){
-                                    throw new ArrayIndexOutOfBoundsException("Error 2");
-                                }
+                            for (; currPos < b + numToAdd; currPos++) {
                                 representation.add(currPos, 1);
                             }
                             for (; currPos < t; currPos++) {
@@ -255,6 +244,16 @@ public class SingleColumn {
                         continue;
                     }
                 }
+            }
+        }
+
+        private void addWall() {
+            int numOfZones = edges.size() / 2;
+            for (int i = 0; i < numOfZones; i++) {
+                int x1 = edges.get(2 * i);
+                int x2 = edges.get(2 * i + 1);
+                representation.add(x1, 2);
+                representation.add(x2, 2);
             }
         }
 
