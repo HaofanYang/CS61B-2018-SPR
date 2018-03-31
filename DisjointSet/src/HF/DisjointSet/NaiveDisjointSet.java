@@ -1,6 +1,6 @@
-package DisjointSet;
+package HF.DisjointSet;
 
-import DisjointSet.DisjointSet;
+import HF.DisjointSet.DisjointSet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +12,7 @@ public class NaiveDisjointSet implements DisjointSet {
 
     public NaiveDisjointSet(int n){
         representation = new int[n];
-        size = new HashMap<>();
+        size = new HashMap<Integer, Integer>();
         for (int i = 0; i < n; i++) {
             representation[i] = i;
             size.put(i, 1);
@@ -37,6 +37,11 @@ public class NaiveDisjointSet implements DisjointSet {
             representation[parentOfq] = parentOfp;
             size.put(p, newSize);
         }
+    }
+
+    @Override
+    public int find(int i) {
+        return findParent(i);
     }
 
     private int findParent(int p) {
