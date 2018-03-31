@@ -16,6 +16,8 @@ public class Percolation {
      */
     private WeightedQuickUnionUF UNION;
     private int openSites;
+    private int virtualTop;
+    private int virtualBot;
 
     public Percolation(int N) {
         size = N;
@@ -25,18 +27,21 @@ public class Percolation {
                 col[i] = 0;
             }
         }
-        UNION = new WeightedQuickUnionUF(N * N);
+        UNION = new WeightedQuickUnionUF(N * N + 2);
         openSites = 0;
+        virtualTop = N * N;
+        virtualBot = N * N + 1;
+        connectToVSites();
     }
     // create N-by-N grid, with all sites initially blocked
     // bigO(N2)
 
 
-
-
-
     public void open(int row, int col) {
         throwErrors(row, col);
+        if (isOpen(row, col)){
+            return;
+        }
         representation[row][col] = 1;
         openSites += 1;
         connect(row,col);
@@ -47,7 +52,7 @@ public class Percolation {
 
     public boolean isOpen(int row, int col) {
         throwErrors(row, col);
-        return representation[row][col] == 1 || representation[row][col] == 2;
+        return representation[row][col] == 1;
     }
     // is the site (row, col) open?
     // Runtime theta(1)
@@ -58,31 +63,15 @@ public class Percolation {
     }
     // number of open sites
 
-    //TODO improve efficiency
+
     public boolean percolates() {
-        boolean result = false;
-        int k = size - 1;
-        for (int i = 0; i < size; i++) {
-            result = result || (isFull(k, i));
-            if (result == true) {
-                break;
-            }
-        }
-        return result;
+        return UNION.connected(virtualBot, virtualTop);
     }
     // does the system percolate?
 
-    //TODO increase efficiency
+
     public boolean isFull(int row, int col) {
-        int ind = twoDToOneD(row, col);
-        boolean result = false;
-        for (int i = 0; i < size * size; i += 10) {
-            result = result || (UNION.connected(ind, i) & isOpen(row, col));
-            if(result == true){
-                break;
-            }
-        }
-        return result;
+        return isOpen(row, col) & UNION.connected(virtualTop, twoDToOneD(row, col));
     }
     // is the site (row, col) full?
 
@@ -113,7 +102,7 @@ public class Percolation {
 
     int twoDToOneD(int row, int col) {
         throwErrors(row, col);
-        return row + size * col;
+        return col + size * row;
     }
 
     void connect(int row, int col) {
@@ -125,11 +114,11 @@ public class Percolation {
 
     private void connectLeft(int row, int col){
         throwErrors(row, col);
-        if(row == 0) {
+        if(col == 0) {
             return;
         } else {
-            if (isOpen(row - 1, col)) {
-                int left = twoDToOneD(row - 1, col);
+            if (isOpen(row, col - 1)) {
+                int left = twoDToOneD(row, col - 1);
                 int curr = twoDToOneD(row, col);
                 UNION.union(curr, left);
             }
@@ -138,11 +127,11 @@ public class Percolation {
 
     private void connectRight(int row, int col){
         throwErrors(row, col);
-        if(row == size - 1) {
+        if(col == size - 1) {
             return;
         } else {
-            if (isOpen(row + 1, col)) {
-                int right = twoDToOneD(row + 1, col);
+            if (isOpen(row, col + 1)) {
+                int right = twoDToOneD(row, col + 1);
                 int curr = twoDToOneD(row, col);
                 UNION.union(curr, right);
             }
@@ -151,11 +140,11 @@ public class Percolation {
 
     private void connectTop(int row, int col){
         throwErrors(row, col);
-        if(col == 0) {
+        if(row == 0) {
             return;
         } else {
-            if (isOpen(row, col - 1)) {
-                int top = twoDToOneD(row, col - 1);
+            if (isOpen(row - 1, col )) {
+                int top = twoDToOneD(row - 1, col);
                 int curr = twoDToOneD(row, col);
                 UNION.union(curr, top);
             }
@@ -164,11 +153,11 @@ public class Percolation {
 
     private void connectBot(int row, int col){
         throwErrors(row, col);
-        if(col == size - 1) {
+        if(row == size - 1) {
             return;
         } else {
-            if (isOpen(row, col + 1)) {
-                int bot = twoDToOneD(row, col + 1);
+            if (isOpen(row + 1, col)) {
+                int bot = twoDToOneD(row + 1, col);
                 int curr = twoDToOneD(row, col);
                 UNION.union(curr, bot);
             }
@@ -177,5 +166,12 @@ public class Percolation {
 
     WeightedQuickUnionUF getUNION(){
         return UNION;
+    }
+
+    private void connectToVSites(){
+        for (int i = 0; i < size; i++) {
+            UNION.union(virtualTop, twoDToOneD(0, i));
+            UNION.union(virtualBot, twoDToOneD(size - 1, i));
+        }
     }
 }

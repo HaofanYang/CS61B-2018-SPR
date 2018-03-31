@@ -8,6 +8,7 @@ public class TestPercolation {
     @Test
     public void testOpen() {
         Percolation test1 = new Percolation(4);
+        assertFalse(test1.isOpen(1, 1));
         test1.open(1,1);
         assertTrue(test1.isOpen(1,1));
     }
@@ -16,7 +17,7 @@ public class TestPercolation {
     public void testTwoToOne() {
         Percolation test1 = new Percolation(4);
         int test = test1.twoDToOneD(2, 3);
-        int acual = 14;
+        int acual = 11;
         assertEquals(acual, test);
     }
 
@@ -47,30 +48,42 @@ public class TestPercolation {
     @Test
     public void testIsFull(){
         Percolation space = new Percolation(10);
-        space.open(4,5);
-        space.open(6,5);
-
-        space.open(5,0);
-        space.open(5,1);
-        space.open(5,2);
-        space.open(5,3);
         space.open(5,4);
         space.open(5,6);
+        space.open(6, 5);
+
+        space.open(0,5);
+        space.open(1,5);
+        space.open(2,5);
+        space.open(3,5);
+        space.open(4,5);
 
 
-        assertTrue(space.isFull(5,0));
-        assertTrue(space.isFull(5,1));
-        assertTrue(space.isFull(5,2));
-        assertTrue(space.isFull(5,3));
-        assertTrue(space.isFull(5,4));
-        assertFalse(space.isFull(4,5));
-        assertFalse(space.isFull(6,5));
-        assertFalse(space.isFull(5,6));
-        space.open(5,5);
-        assertTrue(space.isFull(5,5));
+        assertTrue(space.isFull(0,5));
+        assertTrue(space.isFull(1,5));
+        assertTrue(space.isFull(2,5));
+        assertTrue(space.isFull(3,5));
         assertTrue(space.isFull(4,5));
-        assertTrue(space.isFull(6,5));
+        assertFalse(space.isFull(5,4));
+        assertFalse(space.isFull(5,6));
+        assertFalse(space.isFull(5,5));
+        space.open(5,5);
+        assertTrue(space.isFull(5,4));
         assertTrue(space.isFull(5,6));
+        assertTrue(space.isFull(5,5));
+        assertTrue(space.isFull(6,5));
+    }
+
+    @Test
+    public void multOpens(){
+        Percolation space = new Percolation(10);
+        assertEquals(0, space.numberOfOpenSites());
+        space.open(1, 1);
+        assertEquals(1,space.numberOfOpenSites());
+        space.open(1, 2);
+        assertEquals(2, space.numberOfOpenSites());
+        space.open(1,2);
+        assertEquals(2, space.numberOfOpenSites());
     }
 
 
@@ -78,7 +91,7 @@ public class TestPercolation {
 
     public static void main(String[] args){
         PercolationFactory pf = new PercolationFactory();
-        PercolationStats ps = new PercolationStats(40, 3000, pf);
+        PercolationStats ps = new PercolationStats(200, 300, pf);
         ps.show();
     }
 }
