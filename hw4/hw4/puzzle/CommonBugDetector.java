@@ -1,5 +1,6 @@
 package hw4.puzzle;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -7,7 +8,9 @@ import java.util.Objects;
 /**
  * Created by hug. See https://goo.gl/MVL8up for details on these puzzles.
  */
+
 public class CommonBugDetector {
+
     public static class CommonBugPuzzleState implements WorldState {
         private char name;
         public CommonBugPuzzleState() {
@@ -29,6 +32,7 @@ public class CommonBugDetector {
             return 1;
         }
 
+
         @Override
         public Iterable<WorldState> neighbors() {
             switch (name) {
@@ -42,6 +46,7 @@ public class CommonBugDetector {
                 default: return null;
             }
         }
+
 
         private static List<WorldState> createWorldStateList(List<Character> lc) {
             List<WorldState> lws = new ArrayList<>();
